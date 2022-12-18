@@ -4,23 +4,22 @@ CREATE DATABASE employee_tracker;
 USE employee_tracker;
 
 CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE role (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   title VARCHAR(30) NOT NULL, 
-  salary INT NOT NULL
+  salary INT NOT NULL,
   department_id INT,
   
   FOREIGN KEY (department_id)
   REFERENCES department(id)
-  ON DELETE SET NULL
 );
 
 CREATE TABLE employee (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT, 
@@ -28,9 +27,9 @@ CREATE TABLE employee (
 
     FOREIGN KEY (role_id) 
     REFERENCES role(id),  
-    FOREIGN KEY (manager_id)  --self referencing foreign key
+    FOREIGN KEY (manager_id)  
     REFERENCES employee(id)
 
 
-)
+);
 
