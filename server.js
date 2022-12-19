@@ -83,7 +83,7 @@ const initialQs = () =>{
 };
 // function to get employees
 const viewDepartments = () => {
-    const sql = `SELECT id,name FROM department;`;
+    const sql = `SELECT id, name FROM department;`;
     db.query(sql, (err, res) => {
         if (err) console.log(err);
         console.table(res);
@@ -93,7 +93,7 @@ const viewDepartments = () => {
 
 const viewRoles = () => {
     const sql = 
-    `SELECT role.id,role.title,role.salary,department.name AS department FROM role LEFT JOIN department ON department.id = role.department_id;`;
+    `SELECT role.id,role.title,role.salary,department.id AS department FROM role LEFT JOIN department ON department.id = role.department_id;`;
 db.query(sql, (err, rows) => {
 if (err) {
     console.log(err);
@@ -120,4 +120,84 @@ const viewAllEmployees = () => {
       initialQs();
     });
   };
-  initialQs();
+//all code above works perfectly.....
+
+  const addDept = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of this department?'
+        }
+    ])
+    //USING INSERT INTO method to insert data into an existing table
+    .then(result => {
+        const sql = `INSERT INTO department(name) VALUES();`;
+        const params = result.department_name;
+        db.query(sql, params, (err) => {
+            if (err) {
+                console.log(err);
+            }
+            viewDepartments();
+        });
+    });
+
+  };
+
+const addRoles = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'Name your role'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary for this role?',
+            validate: salaryInput => {
+                if (isNaN(salaryInput)) {
+                    console.log("Please enter a valid ID")
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    ])
+    .then (result => {
+        const params = [result.title, result.salary];
+        const sql = `SELECT * FROM department;`;
+        db.query (sql, (err, rows) => {
+            if (err){
+                console.log(err);
+            }
+            const department_name = rows.map(({name, id}) => ({name: name, value: id}));
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'department',
+                    message: "What department is associated with this role?",
+                    choices: department_name
+                }
+            ])
+            .then(deptResponse => {
+                const department = deptResponse.department;
+                params.push(department);
+                const sql = `INSERT INTO role(title, salary, department_id)
+                VALUES (?,?,?);`;
+                db.query(sql, params, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    viewRoles();
+                });
+            });
+        });
+    });
+};
+
+
+
+
+ initialQs();
