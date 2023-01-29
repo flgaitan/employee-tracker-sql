@@ -4,11 +4,10 @@ const consoletable = require('console.table');
 
 //creating connection store inside var DB
 const db = mysql.createConnection({
-    host: 'localhost',
-    passowrd: '',
+    host:'127.0.0.1', 
     user: 'root',
+    password: 'yourpasswd',
     database: 'employee_tracker'
-
 })
 
 const initialQs = () => {
@@ -112,7 +111,7 @@ const viewAllEmployees = () => {
                         role.salary AS salary,
                         department.id AS department
                         FROM employee LEFT JOIN role ON role.id = employee.role_id 
-                        LEFT JOIN department ON department.id = role.department_id;`;
+                        LEFT JOIN department ON department.id = role.department.id;`;
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err);
@@ -179,16 +178,22 @@ const addRoles = () => {
                         type: 'input',
                         name: 'department',
                         message: "What department is associated with this role?",
+                        // choices: department.map(department => ({ name: department.name, value: department.id }))
                         choices: department_name
                     }
                 ])
+                console.log(department_name)
+                console.log(title, "title")
+                console.log(salary, "salary")
+                console.log(department, "dept")
                     //do console log(row)
                     //console.log(department_name)
                     .then(deptResponse => {
                         const department = deptResponse.department;
                         params.push(department);
                         const sql = `INSERT INTO role(title, salary, department.id)
-                VALUES ('${deptResponse.title, deptResponse.salary, deptResponse.department.id}');`;
+                     VALUES ('${deptResponse.title, deptResponse.salary, deptResponse.department.id}');`;
+                        console.log(deptResponse.title)
                         db.query(sql, params, (err) => {
                             if (err) {
                                 console.log(err);
@@ -253,14 +258,13 @@ const addEmployee = () => {
                                         console.log(err);
                                     }
                                     viewAllEmployees();
+                                });
                             });
-                                })
-
-                            })
-                         
                         });
+                         
                     });
-                })
+                });
+            });
         };
 
 const updateEmpRole = () => {
@@ -371,101 +375,101 @@ const updateEmpRole = () => {
             });
           };
           
-//           const viewByManager = () => {
-//             const sql = `SELECT first_name, last_name, id FROM employees`;
-//             db.query(sql, (err, rows) => {
-//               if (err) {
-//                 console.log(err);
-//               }
-//               const employees = rows.map(({first_name, last_name, id}) => ({name: `${first_name} ${last_name}`, value: id}));
-//               inquirer.prompt([
-//                 {
-//                   type: "list",
-//                   name: "employee",
-//                   message: "Select manager's employees you would like to view?",
-//                   choices: employees
-//                 }
-//               ])
-//               .then(employeeAnswer => {
-//                 const manager = employeeAnswer.employee;
-//                 const params = [manager];
-//                 const sql = `SELECT id, first_name, last_name FROM employees
-//                               WHERE manager_id = ?`
-//                 db.query(sql, params, (err, rows) => {
-//                   if (err) {
-//                     console.log(err);
-//                   }
-//                   console.table(rows);
-//                 })
-//                   viewAllEmployees();
-//                 });
-//             });
-//         };
+          const viewByManager = () => {
+            const sql = `SELECT first_name, last_name, id FROM employee`;
+            db.query(sql, (err, rows) => {
+              if (err) {
+                console.log(err);
+              }
+              const employee = rows.map(({first_name, last_name, id}) => ({name: `${first_name} ${last_name}`, value: id}));
+              inquirer.prompt([
+                {
+                  type: "list",
+                  name: "employee",
+                  message: "Select a manager's employee you would like to view?",
+                  choices: employee
+                }
+              ])
+              .then(employeeAnswer => {
+                const manager = employeeAnswer.employee;
+                const params = [manager];
+                const sql = `SELECT id, first_name, last_name FROM employee
+                              WHERE manager_id = ${params[0]}`
+                db.query(sql, params, (err, rows) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  console.table(rows);
+                })
+                  viewAllEmployees();
+                });
+            });
+        };
           
-//           const viewByDept = () => {
-//             const sql = `SELECT * FROM department`;
-//             db.query(sql, (err, rows) => {
-//               if (err) {
-//                 console.log(err);
-//               }
-//               const departments = rows.map(({name, id}) => ({name: name, value: id}));
-//               inquirer.prompt([
-//                 {
-//                   type: "list",
-//                   name: "employee",
-//                   message: "Which employee department would you like to view?",
-//                   choices: departments
-//                 }
-//               ])
-//               .then(empResult => {
-//                 const department = empResult.employee;
-//                 const params = [department];
-//                 const sql = `SELECT employees.id, first_name, last_name, department_name AS department
-//                               FROM employee
-//                               LEFT JOIN role ON employee.role_id = role.id
-//                               LEFT JOIN department ON role.department_id = department.id
-//                               WHERE department.id = ?`;
-//                 db.query(sql, params, (err, rows) => {
-//                   if (err) {
-//                     console.log(err);
-//                   }
-//                   console.table(rows);
-//                   viewDepartments();
-//                 });
-//             });
-//         });
-//         };
+        //   const viewByDept = () => {
+        //     const sql = `SELECT * FROM department`;
+        //     db.query(sql, (err, rows) => {
+        //       if (err) {
+        //         console.log(err);
+        //       }
+        //       const departments = rows.map(({name, id}) => ({name: department_name, value: id}));
+        //       inquirer.prompt([
+        //         {
+        //           type: "list",
+        //           name: "employee",
+        //           message: "Which employee department would you like to view?",
+        //           choices: departments
+        //         }
+        //       ])
+        //       .then(empResult => {
+        //         const department = empResult.employee;
+        //         const params = [department];
+        //         const sql = `SELECT employee.id, first_name, last_name, department_name AS department
+        //                       FROM employee
+        //                       LEFT JOIN role ON employee.role_id = role.id
+        //                       LEFT JOIN department ON role.department_id = department.id
+        //                       WHERE department.id = ${params}`;
+        //         db.query(sql, params, (err, rows) => {
+        //           if (err) {
+        //             console.log(err);
+        //           }
+        //           console.table(rows);
+        //           viewDepartments();
+        //         });
+        //     });
+        // });
+        // };
           
-//           const removeDepartment = () => {
-//             const sql = `SELECT * FROM department`
-//             db.query(sql, (err, rows) => {
-//               if (err) {
-//                 console.log(err);
-//               }
-//               const departments = rows.map(({name, id}) => ({name: name, value: id}));
-//               inquirer.prompt([
-//                 {
-//                   type: "list",
-//                   name: "department",
-//                   message: "Which department would you like to remove?",
-//                   choices: departments
-//                 }
-//               ])
-//               .then(selectDept => {
-//                 const department = selectDept.department
-//                 const params = department;
-//                 const sql = `DELETE FROM department
-//                               WHERE id = ?`
-//                 db.query(sql, params, (err) => {
-//                   if (err) {
-//                     console.log(err);
-//                   }
-//                   console.log("Department deleted!");
-//                   viewDepartments();
-//                 });
-//             });
-//         });
-//         };
+          const removeDepartment = () => {
+            const sql = `SELECT * FROM department`
+            db.query(sql, (err, rows) => {
+              if (err) {
+                console.log(err);
+              }
+              const departments = rows.map(({name, id}) => ({name: name, value: id}));
+              inquirer.prompt([
+                {
+                  type: "list",
+                  name: "department",
+                  message: "Which department would you like to remove?",
+                  choices: departments
+                }
+              ])
+              .then(selectDept => {
+                const department = selectDept.department
+                const params = department;
+                const sql = `DELETE FROM department
+                              WHERE id = department.id`
+                db.query(sql, params, (err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  console.log("Department deleted!");
+                  viewDepartments();
+                });
+            });
+        });
+        };
           
 //           const removeRole = () => {
 //             const sql = `SELECT id, title FROM role`
@@ -514,9 +518,9 @@ const updateEmpRole = () => {
 //                 }
 //               ])
 //               .then(selectEmp => {
-//                 const employee = selectEmp.employee
+//                 const employee = selectEmp.employees
 //                 const params = employee;
-//                 const sql = `DELETE FROM employees
+//                 const sql = `DELETE FROM employee
 //                               WHERE id = ?`
 //                 db.query(sql, params, (err) => {
 //                   if (err) {
@@ -528,9 +532,6 @@ const updateEmpRole = () => {
 //               });
 //             });
 //           };
-          
-
-
-
+ 
 
 initialQs();
