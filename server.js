@@ -111,7 +111,7 @@ const viewAllEmployees = () => {
                         role.salary AS salary,
                         department.id AS department
                         FROM employee LEFT JOIN role ON role.id = employee.role_id 
-                        LEFT JOIN department ON department.id = role.department.id;`;
+                        LEFT JOIN department ON department.id = role.department_id;`;
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err);
@@ -182,18 +182,15 @@ const addRoles = () => {
                         choices: department_name
                     }
                 ])
-                console.log(department_name)
-                console.log(title, "title")
-                console.log(salary, "salary")
-                console.log(department, "dept")
-                    //do console log(row)
-                    //console.log(department_name)
-                    .then(deptResponse => {
+                //console.log(department_name)
+                //console.log(title, "title")
+                //console.log(salary, "salary")
+                //console.log(department, "dept")
+                .then(deptResponse => {
                         const department = deptResponse.department;
                         params.push(department);
-                        const sql = `INSERT INTO role(title, salary, department.id)
-                     VALUES ('${deptResponse.title, deptResponse.salary, deptResponse.department.id}');`;
-                        console.log(deptResponse.title)
+                        const sql = `INSERT INTO role(title, salary, department_id) VALUES ('${deptResponse.title, deptResponse.salary, deptResponse.department.id}');`;
+                        //console.log(deptResponse.id)
                         db.query(sql, params, (err) => {
                             if (err) {
                                 console.log(err);
@@ -440,7 +437,7 @@ const updateEmpRole = () => {
         // });
         // };
           
-          const removeDepartment = () => {
+          const removeDept = () => {
             const sql = `SELECT * FROM department`
             db.query(sql, (err, rows) => {
               if (err) {
@@ -470,7 +467,7 @@ const updateEmpRole = () => {
             });
         });
         };
-          
+        
 //           const removeRole = () => {
 //             const sql = `SELECT id, title FROM role`
 //             db.query(sql, (err, rows) => {
@@ -535,3 +532,4 @@ const updateEmpRole = () => {
  
 
 initialQs();
+
