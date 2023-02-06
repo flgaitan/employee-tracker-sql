@@ -26,19 +26,19 @@ const initialQs = () => {
                 'Add Employee',
                 'Update employee role',
                 'Update employee manager',
-                'View employees by department',
-                'View employees by manager',
-                'Remove department',
-                'Remove role',
-                'Remove employee',
+                // 'View employees by department',
+                // 'View employees by manager',
+                // 'Remove department',
+                // 'Remove role',
+                // 'Remove employee',
                 'Exit'
             ]
         }
     ])
         .then(result => {
-            console.log("********* RESULT IS *************")
-            console.log(result);
-            console.log("*********************************")
+            //console.log("********* RESULT IS *************")
+            //console.log(result);
+            //console.log("*********************************")
             if (result.option === 'view all departments') {
                 viewDepartments();
             }
@@ -63,21 +63,21 @@ const initialQs = () => {
             if (result.option === 'Update employee manager') {
                 updateEmpManager();
             }
-            if (result.option === 'view employees by department') {
-                viewByDept();
-            }
-            if (result.option === 'view employees by manager') {
-                viewByManager();
-            }
-            if (result.option === 'Remove a department') {
-                removeDept();
-            }
-            if (result.option === 'Remove employee role') {
-                removeRole();
-            }
-            if (result.option === 'Remove a employee') {
-                removeEmployee();
-            }
+            // if (result.option === 'view employees by department') {
+            //     viewByDept();
+            // }
+            // if (result.option === 'view employees by manager') {
+            //     viewByManager();
+            // }
+            // if (result.option === 'Remove a department') {
+            //     removeDept();
+            // }
+            // if (result.option === 'Remove employee role') {
+            //     removeRole();
+            // }
+            // if (result.option === 'Remove a employee') {
+            //     removeEmployee();
+            // }
             if (result.option === 'Exit') {
                 Exit();
             };
@@ -181,20 +181,14 @@ const addRoles = () => {
                         type: 'input',
                         name: 'department',
                         message: "What department is associated with this role?",
-                        // choices: department.map(department => ({ name: department.name, value: department.id }))
                         choices: department_name
                     }
                 ])
-                //console.log(department_name)
-                //console.log(title, "title")
-                //console.log(salary, "salary")
-                //console.log(department, "dept")
                 .then(deptResponse => {
                         const department = deptResponse.department;
-                        console.log(deptResponse)
+                        //console.log(deptResponse)
                         params.push(department);
-                        console.log(params)
-                        //const sql = `INSERT INTO employee(first_name, last_name, manager_id, role_id) VALUES('${params[0]}', '${params[1]}', '${params[2]}', '${params[3]}');`;
+                        //console.log(params)
                         const sql = `INSERT INTO role(title, salary, department_id) VALUES ('${params[0]}', '${params[1]}','${params[2]}');`;
                         //console.log(deptResponse.id)
                         db.query(sql, params, (err) => {
@@ -254,7 +248,7 @@ const addEmployee = () => {
                                 ])
                                 .then(data => {
                                     params.push(data.role);
-                                    console.log(params)
+                                    //console.log(params)
                                     const sql = `INSERT INTO employee(first_name, last_name, manager_id, role_id) VALUES('${params[0]}', '${params[1]}', '${params[2]}', '${params[3]}');`;
                                     db.query(sql, params, (err) => {
                                         if (err) {
@@ -341,10 +335,10 @@ const updateEmpRole = () => {
                 }
               ])
               .then(employeesResult => {
-                console.log(employeesResult)
+                //console.log(employeesResult)
                 const employees = employeesResult.employee;
                 const params = [employees];
-                 console.log(params)
+                //console.log(params)
                 const sql = `SELECT first_name, last_name, id FROM employee`;
                 db.query(sql, (err, rows) => {
                   if (err) {
@@ -362,7 +356,7 @@ const updateEmpRole = () => {
                   .then(managerResult => {
                     const manager = managerResult.manager;
                     params.unshift(manager);
-                    console.log(params)
+                    //console.log(params)
                     const sql = `UPDATE employee
                                   SET manager_id = ${params[0]}
                                   WHERE id = ${params[1]}`
@@ -443,36 +437,36 @@ const updateEmpRole = () => {
         // });
         // };
           
-          const removeDept = () => {
-            const sql = `SELECT * FROM department`
-            db.query(sql, (err, rows) => {
-              if (err) {
-                console.log(err);
-              }
-              const departments = rows.map(({name, id}) => ({name: name, value: id}));
-              inquirer.prompt([
-                {
-                  type: "list",
-                  name: "department",
-                  message: "Which department would you like to remove?",
-                  choices: departments
-                }
-              ])
-              .then(selectDept => {
-                const department = selectDept.department
-                const params = department;
-                const sql = `DELETE FROM department
-                              WHERE id = department.id`
-                db.query(sql, params, (err) => {
-                  if (err) {
-                    console.log(err);
-                  }
-                  console.log("Department deleted!");
-                  viewDepartments();
-                });
-            });
-        });
-        };
+        //   const removeDept = () => {
+        //     const sql = `SELECT * FROM department`
+        //     db.query(sql, (err, rows) => {
+        //       if (err) {
+        //         console.log(err);
+        //       }
+        //       const departments = rows.map(({name, id}) => ({name: name, value: id}));
+        //       inquirer.prompt([
+        //         {
+        //           type: "list",
+        //           name: "department",
+        //           message: "Which department would you like to remove?",
+        //           choices: departments
+        //         }
+        //       ])
+        //       .then(selectDept => {
+        //         const department = selectDept.department
+        //         const params = department;
+        //         const sql = `DELETE FROM department
+        //                       WHERE id = department.id`
+        //         db.query(sql, params, (err) => {
+        //           if (err) {
+        //             console.log(err);
+        //           }
+        //           console.log("Department deleted!");
+        //           viewDepartments();
+        //         });
+        //     });
+        // });
+        // };
         
 //           const removeRole = () => {
 //             const sql = `SELECT id, title FROM role`
