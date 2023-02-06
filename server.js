@@ -36,7 +36,9 @@ const initialQs = () => {
         }
     ])
         .then(result => {
+            console.log("********* RESULT IS *************")
             console.log(result);
+            console.log("*********************************")
             if (result.option === 'view all departments') {
                 viewDepartments();
             }
@@ -107,6 +109,7 @@ const viewAllEmployees = () => {
     const sql = `SELECT employee.id, 
                         employee.first_name, 
                         employee.last_name,
+                        employee.manager_id,
                         role.title AS title,
                         role.salary AS salary,
                         department.id AS department
@@ -188,8 +191,11 @@ const addRoles = () => {
                 //console.log(department, "dept")
                 .then(deptResponse => {
                         const department = deptResponse.department;
+                        console.log(deptResponse)
                         params.push(department);
-                        const sql = `INSERT INTO role(title, salary, department_id) VALUES ('${deptResponse.title, deptResponse.salary, deptResponse.department.id}');`;
+                        console.log(params)
+                        //const sql = `INSERT INTO employee(first_name, last_name, manager_id, role_id) VALUES('${params[0]}', '${params[1]}', '${params[2]}', '${params[3]}');`;
+                        const sql = `INSERT INTO role(title, salary, department_id) VALUES ('${params[0]}', '${params[1]}','${params[2]}');`;
                         //console.log(deptResponse.id)
                         db.query(sql, params, (err) => {
                             if (err) {
